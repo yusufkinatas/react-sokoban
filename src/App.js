@@ -72,7 +72,6 @@ const createGameFieldFromString = (str) => {
     }
   }
 
-  // console.log({ gameField, playerX, playerY });
   return { gameField, playerX, playerY };
 };
 
@@ -195,7 +194,6 @@ const App = () => {
   };
 
   const handleKeyDown = (e) => {
-    console.log(e.code);
     switch (e.code) {
       case "ArrowUp":
         return handlePlayerInput(directions.up);
@@ -215,6 +213,7 @@ const App = () => {
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player, isWon]);
 
   return (
