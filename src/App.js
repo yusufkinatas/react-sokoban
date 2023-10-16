@@ -251,7 +251,7 @@ const App = () => {
   return (
     <div className="App">
       <h3>{`Level: ${currentLevel + 1}`}</h3>
-      <div className="buttons">
+      <div>
         <button
           disabled={!currentLevel}
           onClick={() => setCurrentLevel(currentLevel - 1)}

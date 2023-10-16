@@ -26,11 +26,8 @@ body {
   align-items: center;
 }
 
-.buttons {
-  margin-bottom: 16px;
-}
-
 .gameFieldWrapper {
+  margin: 16px 0;
   flex: 1;
   width: 100%;
   display: flex;
