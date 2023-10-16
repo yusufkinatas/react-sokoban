@@ -63,6 +63,7 @@ button {
   );
 
   --calculated-cell-size: min(
+    var(--max-cell-size),
     var(--cell-size-based-on-available-width),
     var(--cell-size-based-on-available-height)
   );
@@ -86,15 +87,13 @@ button {
 }
 
 .cell {
-  --size: min(var(--calculated-cell-size), var(--max-cell-size));
-
   border: 1px solid #00000010;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: calc(var(--size) - 2px);
-  height: calc(var(--size) - 2px);
-  font-size: calc(var(--size) * 0.8);
+  width: calc(var(--calculated-cell-size) - 2px);
+  height: calc(var(--calculated-cell-size) - 2px);
+  font-size: calc(var(--calculated-cell-size) * 0.8);
 }
 
 .cell_1 {
