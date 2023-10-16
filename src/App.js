@@ -317,6 +317,27 @@ const App = () => {
           ))}
         </div>
       </div>
+
+      <div className="joystick">
+        <div
+          className="joystickButton"
+          onClick={() => handlePlayerInput(directions.up)}
+        />
+        <div className="joystick_middle_row">
+          <div
+            className="joystickButton"
+            onClick={() => handlePlayerInput(directions.left)}
+          />
+          <div
+            className="joystickButton"
+            onClick={() => handlePlayerInput(directions.right)}
+          />
+        </div>
+        <div
+          className="joystickButton"
+          onClick={() => handlePlayerInput(directions.down)}
+        />
+      </div>
     </div>
   );
 };
