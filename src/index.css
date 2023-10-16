@@ -26,6 +26,26 @@ body {
   align-items: center;
 }
 
+select {
+  height: 3rem;
+  font-size: 1.5rem;
+  padding: 0 1rem;
+  min-width: 12rem;
+  margin: 2rem 0;
+}
+
+.buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+button {
+  min-width: 100px;
+  padding: 8px;
+  font-size: 1rem;
+  --webkit-appearance: none;
+}
+
 .gameFieldWrapper {
   margin: 16px 0;
   flex: 1;

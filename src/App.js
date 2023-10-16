@@ -87,6 +87,16 @@ const App = () => {
   const [isWon, setIsWon] = useState(false);
   const gameFieldWrapperRef = useRef();
 
+  const [beatenLevels, setBeatenLevels] = useState(() => {
+    const localStorageData = localStorage.getItem(`beatenLevels`);
+
+    if (localStorageData) {
+      return JSON.parse(localStorageData);
+    }
+
+    return {};
+  });
+
   useEffect(() => {
     const verticalCells = gameField.length;
     const horizontalCells = gameField[0]?.length ?? 0;
@@ -163,7 +173,16 @@ const App = () => {
       gameField.flat().filter((c) => c === types.box).length === 0
     ) {
       setIsWon(true);
+
+      setBeatenLevels((prev) => {
+        const newBeatenLevels = { ...prev, [currentLevel]: true };
+
+        localStorage.setItem(`beatenLevels`, JSON.stringify(newBeatenLevels));
+
+        return newBeatenLevels;
+      });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameField]);
 
   const tryToPushBoxToDir = (boxCell, dir) => {
@@ -221,6 +240,10 @@ const App = () => {
         return handlePlayerInput(directions.left);
       case "KeyR":
         return loadLevel(currentLevel);
+      case "KeyN":
+        return onNextLevel();
+      case "KeyP":
+        return onPreviousLevel();
       default:
         break;
     }
@@ -248,22 +271,39 @@ const App = () => {
       window.removeEventListener("resize", setAvailableGameFieldHeight);
   }, []);
 
+  const onPreviousLevel = () => {
+    if (!currentLevel) return;
+    setCurrentLevel(currentLevel - 1);
+  };
+
+  const onNextLevel = () => {
+    if (currentLevel === levels.length - 1) return;
+    setCurrentLevel(currentLevel + 1);
+  };
+
   return (
     <div className="App">
-      <h3>{`Level: ${currentLevel + 1}`}</h3>
-      <div>
-        <button
-          disabled={!currentLevel}
-          onClick={() => setCurrentLevel(currentLevel - 1)}
-        >
-          Previous Level
+      <select
+        value={currentLevel}
+        onChange={(e) => setCurrentLevel(Number(e.target.value))}
+      >
+        {levels.map((_, i) => (
+          <option key={i} value={i}>
+            {beatenLevels[i] ? "✅ " : ""}Level {i + 1}
+          </option>
+        ))}
+      </select>
+
+      <div className="buttons">
+        <button disabled={!currentLevel} onClick={onPreviousLevel}>
+          Previous (P)
         </button>
-        <button onClick={() => loadLevel(currentLevel)}>Restart Level</button>
+        <button onClick={onNextLevel}>Restart (R)</button>
         <button
           disabled={currentLevel === levels.length - 1}
           onClick={() => setCurrentLevel(currentLevel + 1)}
         >
-          Next Level
+          Next (N)
         </button>
       </div>
       <div ref={gameFieldWrapperRef} className="gameFieldWrapper">
