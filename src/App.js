@@ -97,15 +97,6 @@ const App = () => {
     return {};
   });
 
-  useEffect(() => {
-    const verticalCells = gameField.length;
-    const horizontalCells = gameField[0]?.length ?? 0;
-
-    const html = document.querySelector("html");
-    html.style.setProperty("--vertical-cells", verticalCells);
-    html.style.setProperty("--horizontal-cells", horizontalCells);
-  }, [gameField]);
-
   const loadLevel = (levelIndex) => {
     const {
       gameField: _gameField,
@@ -271,6 +262,15 @@ const App = () => {
       window.removeEventListener("resize", setAvailableGameFieldHeight);
   }, []);
 
+  useEffect(() => {
+    const verticalCells = gameField.length;
+    const horizontalCells = gameField[0]?.length ?? 0;
+
+    const html = document.querySelector("html");
+    html.style.setProperty("--vertical-cells", verticalCells);
+    html.style.setProperty("--horizontal-cells", horizontalCells);
+  }, [gameField]);
+
   const onPreviousLevel = () => {
     if (!currentLevel) return;
     setCurrentLevel(currentLevel - 1);
@@ -298,10 +298,10 @@ const App = () => {
         <button disabled={!currentLevel} onClick={onPreviousLevel}>
           Previous (P)
         </button>
-        <button onClick={onNextLevel}>Restart (R)</button>
+        <button onClick={() => loadLevel(currentLevel)}>Restart (R)</button>
         <button
           disabled={currentLevel === levels.length - 1}
-          onClick={() => setCurrentLevel(currentLevel + 1)}
+          onClick={onNextLevel}
         >
           Next (N)
         </button>
