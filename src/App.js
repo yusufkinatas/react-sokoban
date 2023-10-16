@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import levels from "./levels.json";
 /**
  *   # -> wall
@@ -31,12 +31,18 @@ const createGameFieldFromString = (str) => {
   const gameField = [];
 
   const rows = str.split("\n").filter((r) => r.length);
+
+  const maxRowLength = Math.max(...rows.map((r) => r.length));
+
   let playerX;
   let playerY;
 
   for (let y = 0; y < rows.length; y++) {
     const row = rows[y];
-    gameField.push([]);
+
+    const emptyRow = Array.from({ length: maxRowLength }, () => " ");
+
+    gameField.push(emptyRow);
     for (let x = 0; x < row.length; x++) {
       let value;
       switch (row[x]) {
@@ -79,6 +85,16 @@ const App = () => {
   const [gameField, setGameField] = useState([]);
   const [currentLevel, setCurrentLevel] = useState(0);
   const [isWon, setIsWon] = useState(false);
+  const gameFieldWrapperRef = useRef();
+
+  useEffect(() => {
+    const verticalCells = gameField.length;
+    const horizontalCells = gameField[0]?.length ?? 0;
+
+    const html = document.querySelector("html");
+    html.style.setProperty("--vertical-cells", verticalCells);
+    html.style.setProperty("--horizontal-cells", horizontalCells);
+  }, [gameField]);
 
   const loadLevel = (levelIndex) => {
     const {
@@ -216,11 +232,26 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player, isWon]);
 
+  useEffect(() => {
+    const setAvailableGameFieldHeight = () => {
+      document
+        .querySelector("html")
+        .style.setProperty(
+          "--available-game-field-height",
+          `${gameFieldWrapperRef.current.clientHeight}px`
+        );
+    };
+
+    setAvailableGameFieldHeight();
+    window.addEventListener("resize", setAvailableGameFieldHeight);
+    return () =>
+      window.removeEventListener("resize", setAvailableGameFieldHeight);
+  }, []);
+
   return (
     <div className="App">
-      <h1>SOKOBAN</h1>
       <h3>{`Level: ${currentLevel + 1}`}</h3>
-      <div>
+      <div className="buttons">
         <button
           disabled={!currentLevel}
           onClick={() => setCurrentLevel(currentLevel - 1)}
@@ -235,14 +266,16 @@ const App = () => {
           Next Level
         </button>
       </div>
-      <div className={`gameField ${isWon ? "won" : ""}`}>
-        {gameField.map((row, rowIndex) => (
-          <div key={rowIndex} className="row">
-            {row.map((cell, cellIndex) => (
-              <div key={cellIndex} className={`cell cell_${cell}`} />
-            ))}
-          </div>
-        ))}
+      <div ref={gameFieldWrapperRef} className="gameFieldWrapper">
+        <div className={`gameField ${isWon ? "won" : ""}`}>
+          {gameField.map((row, rowIndex) => (
+            <div key={rowIndex} className="row">
+              {row.map((cell, cellIndex) => (
+                <div key={cellIndex} className={`cell cell_${cell}`} />
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
